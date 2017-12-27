@@ -1,34 +1,19 @@
+/**
+ * ==============================
+ * @Author:   X.Teng
+ * @Version:  1.0 
+ * @DateTime: 2017-12-27 16:23:12
+ * ==============================
+ */
 var express = require('express');
 var router = express.Router();
 var URL = require('url');
 var userDao = require('../dao/userDao');
 
-function User() {
-      this.name;
-      this.city;
-      this.age;
-}
 
+/*获取用户信息*/
 router.get('/getUserInfo', function(req, res, next) {
-
-    var user = new User();
-    console.info("exe");
-    var params = URL.parse(req.url, true).query;
-
- if(params.id == '1') {
-
-    user.name = "ligh";
-    user.age = "1";
-    user.city = "北京市";
-
-}else{
-    user.name = "SPTING";
-    user.age = "1";
-    user.city = "杭州市";
-}
-
-  var response = {status:1,data:user};
-  res.send(JSON.parse(JSON.stringify(response)));
+  userDao.getUserInfo(req, res, next);
 });
 
 
@@ -37,9 +22,10 @@ router.get('/', function(req, res, next) {
   res.send({status:'json'});
 });
 
-/* GET users listing. */
+
+/*获取blog信息*/
 router.get('/blog', function(req, res, next) {
-  userDao.list(req, res, next);
+  userDao.blog(req, res, next);
 });
 
 module.exports = router;

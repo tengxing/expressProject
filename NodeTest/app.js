@@ -1,11 +1,10 @@
 /**
- * ============================
+ * ==============================
  * @Author:   X.Teng
  * @Version:  1.0 
- * @DateTime: 2017-12-27 12:48:44
- * ============================
+ * @DateTime: 2017-12-27 16:23:42
+ * ==============================
  */
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
