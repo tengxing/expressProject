@@ -1,3 +1,11 @@
+/**
+ * ============================
+ * @Author:   X.Teng
+ * @Version:  1.0 
+ * @DateTime: 2017-12-27 12:48:44
+ * ============================
+ */
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -59,5 +67,49 @@ var port = (function () {
 app.listen(port, function () { 
   console.log('app listening on port ' + port + ' !')
 })
+
+
+// 连接redis数据库
+//https://github.com/NodeRedis/node_redis
+var redis = require('redis');
+var client = redis.createClient('6379','127.0.0.1',{
+    retry_strategy: function (options) {
+        if (options.error && options.error.code === 'ECONNREFUSED') {
+            // End reconnecting on a specific error and flush all commands with
+            // a individual error
+            return new Error('The server refused the connection');
+        }
+        if (options.total_retry_time > 1000 * 60 * 60) {
+            // End reconnecting after a specific timeout and flush all commands
+            // with a individual error
+            return new Error('Retry time exhausted');
+        }
+        if (options.attempt > 10) {
+            // End reconnecting with built in error
+            return undefined;
+        }
+        // reconnect after
+        return Math.min(options.attempt * 100, 3000);
+    }
+});
+client.auth(''); // 传入密码
+client.on('connect',function(){
+    console.log('connect');
+});
+client.set("foo_rand000000000000", "OK");
+client.get("foo_rand000000000000", function (err, reply) {
+    console.log(reply.toString()); // Will print `OK`
+});
+//储存对象
+client.hmset('frameworks', {
+    'javascript': 'AngularJS',
+    'css': 'Bootstrap',
+    'node': 'Express'
+});
+client.hgetall("frameworks", function (err, object) {
+    console.log(object); // Will print `OK`
+});
+//client.quit()//关闭
+
 
 module.exports = app;
