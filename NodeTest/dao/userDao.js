@@ -13,8 +13,25 @@ var  sql = "SELECT * FROM yjxx.article_type ";
 var $db = require('../config/db');
 var pool = $db.connect();
 
+var $redisUtil = require('../config/redisUtil');
+client = $redisUtil.connect();
+
 
 module.exports = {
+    getRedisValue: function(req, res) {
+      var key = "foo_rand000000000000";
+      $redisUtil.executeSet(key, "thisisvalue", client);
+
+      console.info("获取redis Key------>"+key);
+      $redisUtil.executeGet(key, function(err, result) {
+        if(err){
+          console.log('[Redis ERROR] - ',err.message);
+          return;
+        }
+          res.json({key:result});
+          console.log(result);
+      },client);
+    },
     blog: function(req, res) {
       console.info("执行sql------>"+sql);
       $db.executeSql(sql, [], function(err, result) {
@@ -35,7 +52,6 @@ module.exports = {
             this.age;
       }
       var user = new User();
-    console.info("exe");
     var params = URL.parse(req.url, true).query;
 
      if(params.id == '1') {
@@ -52,7 +68,7 @@ module.exports = {
 
       $db.executeSql(sql, [], function(err, result) {
         if(err){
-          console.log('[SELECT ERROR] - ',err.message);
+          console.log('[Mysql ERROR] - ',err.message);
           return;
         } 
         var response = {status:1,data:user};

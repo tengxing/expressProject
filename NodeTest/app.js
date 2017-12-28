@@ -1,7 +1,7 @@
 /**
  * ==============================
- * @Author:   X.Teng
- * @Version:  1.0 
+ * @Author: X.Teng
+ * @Version: 1.0 
  * @DateTime: 2017-12-27 16:23:42
  * ==============================
  */
@@ -26,9 +26,11 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// 第三方中间件
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 应用级中间件
 app.use('/', index);
 app.use('/users', users);
 
@@ -39,15 +41,15 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
+// 错误处理中间件
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 //node app.js 8000
@@ -91,7 +93,7 @@ var client = redis.createClient('6379','127.0.0.1',{
         return Math.min(options.attempt * 100, 3000);
     }
 });
-client.auth(''); // 传入密码
+//client.auth(''); // 传入密码
 client.on('connect',function(){
     console.log('connect');
 });
@@ -108,7 +110,7 @@ client.hmset('frameworks', {
 client.hgetall("frameworks", function (err, object) {
     console.log(object); // Will print `OK`
 });
-//client.quit()//关闭
+client.quit()//关闭
 
 
 module.exports = app;

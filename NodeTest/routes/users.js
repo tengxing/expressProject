@@ -19,7 +19,7 @@ router.get('/getUserInfo', function(req, res, next) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send({status:'json'});
+  userDao.getRedisValue(req, res, next);
 });
 
 
