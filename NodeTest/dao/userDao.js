@@ -6,6 +6,7 @@
  * ==============================
  */
 var URL = require('url');
+var User = require("./User");
 //SQL语句
 var  sql = "SELECT * FROM yjxx.article_type ";
 
@@ -46,11 +47,11 @@ module.exports = {
     getUserInfo: function (req, res) {
       console.info("执行sql------>"+sql);
 
-      function User() {
+/*      function User() {
             this.name;
             this.city;
             this.age;
-      }
+      }*/
       var user = new User();
     var params = URL.parse(req.url, true).query;
 

@@ -10,6 +10,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
@@ -29,6 +30,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // 第三方中间件
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//Session验证
+app.use(session({
+  name: 'testapp',   //这里的name值得是cookie的name，默认cookie的name是：connect.sid
+  resave: true, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'thisisasecret',
+  cookie : {
+    maxAge : 60000 * 20 //20 minutes  ms
+  }
+}));
 
 // 应用级中间件
 app.use('/', index);
@@ -111,6 +123,21 @@ client.hgetall("frameworks", function (err, object) {
     console.log(object); // Will print `OK`
 });
 client.quit()//关闭
+
+
+
+var redis = require("redis")
+  , subscriber = redis.createClient()
+  , publisher  = redis.createClient();
+
+subscriber.on("message", function(channel, message) {
+  console.log("Message '" + message + "' on channel '" + channel + "' arrived!")
+});
+
+subscriber.subscribe("test");
+
+publisher.publish("test", "haaaaai");
+publisher.publish("test", "kthxbai");
 
 
 module.exports = app;
